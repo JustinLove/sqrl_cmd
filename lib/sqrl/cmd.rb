@@ -1,5 +1,6 @@
 require "sqrl/cmd/version"
-require "sqrl/authentication_query"
+require "sqrl/client_session"
+require "sqrl/authentication_query_generator"
 require "thor"
 require "httpclient"
 
@@ -7,18 +8,19 @@ module SQRL
   class Cmd < Thor
     desc 'sign url', 'Sign the provided url'
     def sign(url)
-      request = AuthenticationQuery.new(url, 'x'*32)
+      session = ClientSession.new(url, 'x'*32)
+      request = AuthenticationQueryGenerator.new(session, url)
       p request.client_data
-      puts "POST #{request.url}\n\n"
+      puts "POST #{request.post_path}\n\n"
       puts request.post_body
 
       request
     end
 
-    desc 'post login', 'Sign the provided url and attempt to log in'
+    desc 'post sqrl url', 'Sign the provided url and show the server response'
     def post(url)
       request = sign(url)
-      response = HTTPClient.new.post(request.url, request.post_body)
+      response = HTTPClient.new.post(request.post_path, request.post_body)
       puts response.body
       puts "Response: #{response.status}"
     end
