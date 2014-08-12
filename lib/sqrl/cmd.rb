@@ -23,7 +23,7 @@ module SQRL
 
     desc 'sign [URL]', 'Print the signed request'
     def sign(url)
-      session = ClientSession.new(url, 'x'*32)
+      session = ClientSession.new(url, imk)
       request = AuthenticationQueryGenerator.new(session, url)
       p request.client_data
       puts "POST #{request.post_path}\n\n"
@@ -47,7 +47,7 @@ module SQRL
     option :loops, :type => :numeric, :default => 2,
       :desc => "1: direct, 2: check server first"
     def login(url)
-      session = ClientSession.new(url, 'x'*32)
+      session = ClientSession.new(url, imk)
 
       if options[:loops] >= 2
         parsed = verbose_request(url, session)
@@ -69,7 +69,7 @@ module SQRL
 
     private
     def verbose_request(url, session = nil)
-      session ||= ClientSession.new(url, 'x'*32)
+      session ||= ClientSession.new(url, imk)
       req = AuthenticationQueryGenerator.new(session, url)
       req = yield req if block_given?
       log.debug req.client_data.inspect
@@ -89,6 +89,10 @@ module SQRL
 
     def verbose
       ([options[:verbose].to_s.upcase, "WARN"] & LogLevels).compact.first
+    end
+
+    def imk
+      'x'.b*32
     end
   end
 end
