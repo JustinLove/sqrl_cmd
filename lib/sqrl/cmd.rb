@@ -38,20 +38,25 @@ module SQRL
       p parsed.params
     end
 
-    desc 'login [URL]', 'Attempt single-loop login'
-    def login(url)
-      parsed = verbose_request(url) {|req| req.login!}
-      puts parsed.server_friendly_name
-      puts parsed.tif.to_s(16)
-    end
+    desc 'login [URL]', 'Attempt login'
+    long_desc <<-LONGDESC
+      loops=1: The first request to the server includes the login command
 
-    desc 'loopin [URL]', 'Attempt double-loop login'
-    def loopin(url)
+      loops=2: Send a request with no command, and then prompt the user whether to login using the server friendly name.
+    LONGDESC
+    option :loops, :type => :numeric, :default => 2,
+      :desc => "1: direct, 2: check server first"
+    def login(url)
       session = ClientSession.new(url, 'x'*32)
-      parsed = verbose_request(url, session)
-      puts parsed.tif.to_s(16)
-      return unless yes?("log in to '#{parsed.server_friendly_name}'?")
+
+      if options[:loops] >= 2
+        parsed = verbose_request(url, session)
+        puts parsed.tif.to_s(16)
+        return unless yes?("log in to '#{parsed.server_friendly_name}'?")
+      end
+
       parsed = verbose_request(url, session) {|req| req.login!}
+      puts parsed.server_friendly_name
       puts parsed.tif.to_s(16)
     end
 
