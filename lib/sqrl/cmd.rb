@@ -7,6 +7,8 @@ require "httpclient"
 
 module SQRL
   class Cmd < Thor
+    class_option :verbose, :type => :boolean
+
     desc 'sign [URL]', 'Print the signed request'
     def sign(url)
       session = ClientSession.new(url, 'x'*32)
@@ -18,26 +20,34 @@ module SQRL
       request
     end
 
-    desc 'post [URL]', 'Show request andserver response'
+    desc 'post [URL]', 'Show server response'
     def post(url)
-      verbose_request(url)
+      parsed = verbose_request(url)
+      p parsed.params
     end
 
     desc 'login [URL]', 'Attempt single-loop login'
     def login(url)
-      verbose_request(url) {|req| req.login!}
+      parsed = verbose_request(url) {|req| req.login!}
+      puts parsed.server_friendly_name
+      puts parsed.tif.to_s(16)
     end
 
     desc 'loopin [URL]', 'Attempt double-loop login'
     def loopin(url)
       session = ClientSession.new(url, 'x'*32)
-      verbose_request(url, session)
-      verbose_request(url, session) {|req| req.login!}
+      parsed = verbose_request(url, session)
+      puts parsed.server_friendly_name
+      puts parsed.tif.to_s(16)
+      parsed = verbose_request(url, session) {|req| req.login!}
+      puts parsed.tif.to_s(16)
     end
 
     desc 'logoff [URL]', 'Issue logoff command'
     def logoff(url)
-      verbose_request(url) {|req| req.logoff!}
+      parsed = verbose_request(url) {|req| req.logoff!}
+      puts parsed.server_friendly_name
+      puts parsed.tif.to_s(16)
     end
 
     private
@@ -45,17 +55,31 @@ module SQRL
       session ||= ClientSession.new(url, 'x'*32)
       req = AuthenticationQueryGenerator.new(session, url)
       req = yield req if block_given?
-      p req.client_data
-      puts "POST #{req.post_path}\n\n"
-      puts req.post_body
+      vp req.client_data
+      vputs "POST #{req.post_path}\n\n"
+      vputs req.post_body
       res = HTTPClient.new.post(req.post_path, req.post_body)
-      puts "Response: #{res.status}"
-      puts res.body
+      vputs "Response: #{res.status}"
+      vputs res.body
 
       parsed = AuthenticationResponseParser.new(session, res.body)
-      p parsed.params
+      vp parsed.params
+      parsed
     rescue Errno::ECONNREFUSED => e
       puts e.message
+      AuthenticationResponseParser.new(session, {'exception' => e})
+    end
+
+    def verbose?
+      options[:verbose]
+    end
+
+    def vp(*args)
+      p(*args) if verbose?
+    end
+
+    def vputs(*args)
+      puts(*args) if verbose?
     end
   end
 end
