@@ -20,57 +20,42 @@ module SQRL
 
     desc 'post sqrl url', 'Sign the provided url and show the server response'
     def post(url)
-      request = sign(url)
-      response = HTTPClient.new.post(request.post_path, request.post_body)
-      puts response.body
-      puts "Response: #{response.status}"
+      verbose_request(url)
     end
 
     desc 'attempt one-step login', 'Sign the provided url and attempt to complete login'
     def login(url)
-      session = ClientSession.new(url, 'x'*32)
-      req1 = AuthenticationQueryGenerator.new(session, url).login!
-      p req1.client_data
-      puts "POST #{req1.post_path}\n\n"
-      puts req1.post_body
-      res1 = HTTPClient.new.post(req1.post_path, req1.post_body)
-      puts "Response 1: #{res1.status}"
-      puts res1.body
-
-      parsed = AuthenticationResponseParser.new(session, res1.body)
-      p parsed.params
+      verbose_request(url) {|req| req.login!}
     end
 
     desc 'attempt second-loop login', 'Sign the provided url and attempt to complete login'
     def loopin(url)
-      req1 = sign(url)
-      res1 = HTTPClient.new.post(req1.post_path, req1.post_body)
-      puts res1.body
-      puts "Response 1: #{res1.status}"
-
-      req2 = SQRL::AuthenticationQueryGenerator.new(req1.session, res1.body).login!
-      p req2.client_data
-      puts "POST #{req2.post_path}\n\n"
-      puts req2.post_body
-      res2 = HTTPClient.new.post(req2.post_path, req2.post_body)
-      puts res2.body
-      puts "Response 2: #{res2.status}"
+      session = ClientSession.new(url, 'x'*32)
+      verbose_request(url, session)
+      verbose_request(url, session) {|req| req.login!}
     end
 
     desc 'attempt to logoff', 'Sign the provided url and issue a logoff command'
     def logoff(url)
-      session = ClientSession.new(url, 'x'*32)
-      req1 = AuthenticationQueryGenerator.new(session, url).logoff!
-      p req1.client_data
-      puts "POST #{req1.post_path}\n\n"
-      puts req1.post_body
-      res1 = HTTPClient.new.post(req1.post_path, req1.post_body)
-      puts "Response 1: #{res1.status}"
-      puts res1.body
-
-      parsed = AuthenticationResponseParser.new(session, res1.body)
-      p parsed.params
+      verbose_request(url) {|req| req.logoff!}
     end
 
+    private
+    def verbose_request(url, session = nil)
+      session ||= ClientSession.new(url, 'x'*32)
+      req = AuthenticationQueryGenerator.new(session, url)
+      req = yield req if block_given?
+      p req.client_data
+      puts "POST #{req.post_path}\n\n"
+      puts req.post_body
+      res = HTTPClient.new.post(req.post_path, req.post_body)
+      puts "Response: #{res.status}"
+      puts res.body
+
+      parsed = AuthenticationResponseParser.new(session, res.body)
+      p parsed.params
+    rescue Errno::ECONNREFUSED => e
+      puts e.message
+    end
   end
 end
