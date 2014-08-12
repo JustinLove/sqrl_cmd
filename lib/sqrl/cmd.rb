@@ -1,4 +1,5 @@
 require "sqrl/cmd/version"
+require "sqrl/tif"
 require "sqrl/client_session"
 require "sqrl/authentication_query_generator"
 require "sqrl/authentication_response_parser"
@@ -36,6 +37,7 @@ module SQRL
     def post(url)
       parsed = verbose_request(url)
       p parsed.params
+      print_tif(parsed.tif)
     end
 
     desc 'login [URL]', 'Attempt login'
@@ -51,20 +53,20 @@ module SQRL
 
       if options[:loops] >= 2
         parsed = verbose_request(url, session)
-        puts parsed.tif.to_s(16)
+        print_tif(parsed.tif)
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       end
 
       parsed = verbose_request(url, session) {|req| req.login!}
       puts parsed.server_friendly_name
-      puts parsed.tif.to_s(16)
+      print_tif(parsed.tif)
     end
 
     desc 'logoff [URL]', 'Issue logoff command'
     def logoff(url)
       parsed = verbose_request(url) {|req| req.logoff!}
       puts parsed.server_friendly_name
-      puts parsed.tif.to_s(16)
+      print_tif(parsed.tif)
     end
 
     private
@@ -89,6 +91,16 @@ module SQRL
 
     def verbose
       ([options[:verbose].to_s.upcase, "WARN"] & LogLevels).compact.first
+    end
+
+    def print_tif(tif)
+      print_table SQRL::TIF.map {|bit, flag|
+        if (tif & bit) != 0
+          [bit.to_s(16), flag.to_s.upcase]
+        else
+          ['  ', flag]
+        end
+      }
     end
 
     def imk
