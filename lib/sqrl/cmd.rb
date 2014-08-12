@@ -33,11 +33,9 @@ module SQRL
       request
     end
 
-    desc 'post [URL]', 'Show server response'
+    desc 'post [URL]', 'Query server status with no command'
     def post(url)
-      parsed = verbose_request(url)
-      p parsed.params
-      print_tif(parsed.tif)
+      standard_display verbose_request(url)
     end
 
     desc 'login [URL]', 'Attempt login'
@@ -57,16 +55,12 @@ module SQRL
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       end
 
-      parsed = verbose_request(url, session) {|req| req.login!}
-      puts parsed.server_friendly_name
-      print_tif(parsed.tif)
+      standard_display verbose_request(url, session) {|req| req.login!}
     end
 
     desc 'logoff [URL]', 'Issue logoff command'
     def logoff(url)
-      parsed = verbose_request(url) {|req| req.logoff!}
-      puts parsed.server_friendly_name
-      print_tif(parsed.tif)
+      standard_display verbose_request(url) {|req| req.logoff!}
     end
 
     private
@@ -101,6 +95,11 @@ module SQRL
           ['  ', flag]
         end
       }
+    end
+
+    def standard_display(parsed)
+      puts parsed.server_friendly_name
+      print_tif(parsed.tif)
     end
 
     def imk
