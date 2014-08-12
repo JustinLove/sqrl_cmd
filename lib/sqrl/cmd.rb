@@ -49,8 +49,8 @@ module SQRL
     def loopin(url)
       session = ClientSession.new(url, 'x'*32)
       parsed = verbose_request(url, session)
-      puts parsed.server_friendly_name
       puts parsed.tif.to_s(16)
+      return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       parsed = verbose_request(url, session) {|req| req.login!}
       puts parsed.tif.to_s(16)
     end
