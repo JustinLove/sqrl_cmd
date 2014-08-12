@@ -7,7 +7,7 @@ require "httpclient"
 
 module SQRL
   class Cmd < Thor
-    desc 'sign url', 'Sign the provided url'
+    desc 'sign [URL]', 'Print the signed request'
     def sign(url)
       session = ClientSession.new(url, 'x'*32)
       request = AuthenticationQueryGenerator.new(session, url)
@@ -18,24 +18,24 @@ module SQRL
       request
     end
 
-    desc 'post sqrl url', 'Sign the provided url and show the server response'
+    desc 'post [URL]', 'Show request andserver response'
     def post(url)
       verbose_request(url)
     end
 
-    desc 'attempt one-step login', 'Sign the provided url and attempt to complete login'
+    desc 'login [URL]', 'Attempt single-loop login'
     def login(url)
       verbose_request(url) {|req| req.login!}
     end
 
-    desc 'attempt second-loop login', 'Sign the provided url and attempt to complete login'
+    desc 'loopin [URL]', 'Attempt double-loop login'
     def loopin(url)
       session = ClientSession.new(url, 'x'*32)
       verbose_request(url, session)
       verbose_request(url, session) {|req| req.login!}
     end
 
-    desc 'attempt to logoff', 'Sign the provided url and issue a logoff command'
+    desc 'logoff [URL]', 'Issue logoff command'
     def logoff(url)
       verbose_request(url) {|req| req.logoff!}
     end
