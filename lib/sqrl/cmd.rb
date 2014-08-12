@@ -56,5 +56,21 @@ module SQRL
       puts res2.body
       puts "Response 2: #{res2.status}"
     end
+
+    desc 'attempt to logoff', 'Sign the provided url and issue a logoff command'
+    def logoff(url)
+      session = ClientSession.new(url, 'x'*32)
+      req1 = AuthenticationQueryGenerator.new(session, url).logoff!
+      p req1.client_data
+      puts "POST #{req1.post_path}\n\n"
+      puts req1.post_body
+      res1 = HTTPClient.new.post(req1.post_path, req1.post_body)
+      puts "Response 1: #{res1.status}"
+      puts res1.body
+
+      parsed = AuthenticationResponseParser.new(session, res1.body)
+      p parsed.params
+    end
+
   end
 end
