@@ -4,10 +4,22 @@ require "sqrl/authentication_query_generator"
 require "sqrl/authentication_response_parser"
 require "thor"
 require "httpclient"
+require "logger"
 
 module SQRL
   class Cmd < Thor
-    class_option :verbose, :type => :boolean
+    LogLevels = %w[DEBUG INFO WARN ERROR FATAL UNKNOWN]
+    class_option :verbose, :default => 'WARN', :desc => 'DEBUG, INFO, WARN'
+
+    def initialize(*args)
+      super
+      @log = Logger.new(STDERR)
+      @log.level = Logger.const_get(verbose)
+      log.formatter = proc do |severity, datetime, progname, msg|
+        "#{msg}\n"
+      end
+    end
+    attr_reader :log
 
     desc 'sign [URL]', 'Print the signed request'
     def sign(url)
@@ -55,31 +67,23 @@ module SQRL
       session ||= ClientSession.new(url, 'x'*32)
       req = AuthenticationQueryGenerator.new(session, url)
       req = yield req if block_given?
-      vp req.client_data
-      vputs "POST #{req.post_path}\n\n"
-      vputs req.post_body
+      log.debug req.client_data.inspect
+      log.debug "POST #{req.post_path}\n\n"
+      log.debug req.post_body
       res = HTTPClient.new.post(req.post_path, req.post_body)
-      vputs "Response: #{res.status}"
-      vputs res.body
+      log.debug "Response: #{res.status}"
+      log.debug res.body
 
       parsed = AuthenticationResponseParser.new(session, res.body)
-      vp parsed.params
+      log.info parsed.params.inspect
       parsed
     rescue Errno::ECONNREFUSED => e
-      puts e.message
+      log.error e.message
       AuthenticationResponseParser.new(session, {'exception' => e})
     end
 
-    def verbose?
-      options[:verbose]
-    end
-
-    def vp(*args)
-      p(*args) if verbose?
-    end
-
-    def vputs(*args)
-      puts(*args) if verbose?
+    def verbose
+      ([options[:verbose].to_s.upcase, "WARN"] & LogLevels).compact.first
     end
   end
 end
