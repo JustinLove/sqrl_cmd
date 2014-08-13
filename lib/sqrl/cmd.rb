@@ -70,9 +70,16 @@ module SQRL
       standard_display verbose_request(url, session) {|req| req.login!}
     end
 
-    desc 'logoff [URL]', 'Issue logoff command'
-    def logoff(url)
-      standard_display verbose_request(url) {|req| req.logoff!}
+    desc 'logout [URL]', 'Issue logout command'
+    option :logoff, :type => :boolean
+    def logout(url)
+      standard_display verbose_request(url) {|req|
+        if options[:logoff]
+          req.logoff!
+        else
+          req.logout!
+        end
+      }
     end
 
     private
