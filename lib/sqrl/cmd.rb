@@ -56,8 +56,16 @@ module SQRL
     end
 
     desc 'create [URL]', 'Create a new account on the system'
+    option :only, :type => :boolean,
+      :desc => "do not issue setkey/setlock"
     def create(url)
-      standard_display verbose_request(url) {|req| req.create!}
+      standard_display verbose_request(url) {|req|
+        req.create!
+        unless options[:only]
+          req.setkey!.setlock!(identity_lock_key.unlock_pair)
+        end
+        req
+      }
     end
 
     desc 'login [URL]', 'Attempt login'
