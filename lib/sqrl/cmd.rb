@@ -3,6 +3,8 @@ require "sqrl/tif"
 require "sqrl/client_session"
 require "sqrl/authentication_query_generator"
 require "sqrl/authentication_response_parser"
+require "sqrl/key/identity_master"
+require "sqrl/key/identity_unlock"
 require "thor"
 require "httpclient"
 require "logger"
@@ -36,6 +38,13 @@ module SQRL
     desc 'post [URL]', 'Query server status with no command'
     def post(url)
       standard_display verbose_request(url)
+    end
+
+    desc 'setlock [URL]', 'Send the server and verify unlock keys'
+    def setlock(url)
+      standard_display verbose_request(url) {|req|
+        req.setlock!(identity_lock_key.unlock_pair)
+      }
     end
 
     desc 'login [URL]', 'Attempt login'
@@ -103,7 +112,15 @@ module SQRL
     end
 
     def imk
-      'x'.b*32
+      Key::IdentityMaster.new('x'.b*32)
+    end
+
+    def identity_unlock_key
+      Key::IdentityUnlock.new('x'.b*32)
+    end
+
+    def identity_lock_key
+      @ilk ||= identity_unlock_key.identity_lock_key
     end
   end
 end
