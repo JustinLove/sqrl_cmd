@@ -69,6 +69,10 @@ module SQRL
       if options[:loops] >= 2
         parsed = verbose_request(url, session)
         print_tif(parsed.tif)
+        unless parsed.id_match?
+          puts "Abort, ID not known"
+          return
+        end
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       end
 
