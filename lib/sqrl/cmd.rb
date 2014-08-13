@@ -41,6 +41,11 @@ module SQRL
       standard_display verbose_request(url)
     end
 
+    desc 'setkey [URL]', 'Issue setkey command'
+    def setkey(url)
+      standard_display verbose_request(url) {|req| req.setkey!}
+    end
+
     desc 'setlock [URL]', 'Send the server and verify unlock keys'
     def setlock(url)
       response = verbose_request(url) {|req|
