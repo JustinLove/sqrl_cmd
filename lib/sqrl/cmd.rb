@@ -5,6 +5,7 @@ require "sqrl/authentication_query_generator"
 require "sqrl/authentication_response_parser"
 require "sqrl/key/identity_master"
 require "sqrl/key/identity_unlock"
+require "sqrl/base64"
 require "thor"
 require "httpclient"
 require "logger"
@@ -42,9 +43,11 @@ module SQRL
 
     desc 'setlock [URL]', 'Send the server and verify unlock keys'
     def setlock(url)
-      standard_display verbose_request(url) {|req|
+      response = verbose_request(url) {|req|
         req.setlock!(identity_lock_key.unlock_pair)
       }
+      standard_display response
+      puts Base64.encode(response.suk)
     end
 
     desc 'login [URL]', 'Attempt login'
