@@ -55,6 +55,11 @@ module SQRL
       puts Base64.encode(response.suk)
     end
 
+    desc 'create [URL]', 'Create a new account on the system'
+    def create(url)
+      standard_display verbose_request(url) {|req| req.create!}
+    end
+
     desc 'login [URL]', 'Attempt login'
     long_desc <<-LONGDESC
       loops=1: The first request to the server includes the login command
