@@ -146,8 +146,8 @@ module SQRL
     end
 
     def standard_display(parsed)
-      puts parsed.server_friendly_name
       print_tif(parsed.tif)
+      puts "#{parsed.server_friendly_name} -- #{parsed.ask}"
     end
 
     def imk
