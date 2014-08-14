@@ -14,6 +14,7 @@ module SQRL
   class Cmd < Thor
     LogLevels = %w[DEBUG INFO WARN ERROR FATAL UNKNOWN]
     class_option :verbose, :default => 'WARN', :desc => 'DEBUG, INFO, WARN'
+    class_option :tif_base, :type => :numeric, :default => 16
 
     def initialize(*args)
       super
@@ -122,6 +123,7 @@ module SQRL
       log.debug res.body
 
       parsed = AuthenticationResponseParser.new(session, res.body)
+      parsed.tif_base = options[:tif_base]
       log.info parsed.params.inspect
       parsed
     rescue Errno::ECONNREFUSED => e
