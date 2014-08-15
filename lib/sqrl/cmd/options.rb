@@ -14,6 +14,7 @@ module SQRL
 
     class_option :imk, :type => :string, :desc => 'Identity Master Key'
     class_option :iuk, :type => :string, :desc => 'Identity Unlock Key'
+    class_option :ilk, :type => :string, :desc => 'Identity Lock Key'
 
     private
     def verbose
@@ -36,7 +37,11 @@ module SQRL
     end
 
     def identity_lock_key
-      @ilk ||= identity_unlock_key.identity_lock_key
+      @ilk ||= if options[:ilk]
+        Key::IdentityLock.new(parse_key(options[:ilk]))
+      else
+        identity_unlock_key.identity_lock_key
+      end
     end
 
     def parse_key(key)
@@ -49,7 +54,6 @@ module SQRL
         log.fatal "Unknown key format provided '#{key}', #{key.length} characters"
         exit
       end
-      p x
     end
   end
 end
