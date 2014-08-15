@@ -6,7 +6,7 @@ module SQRL
     private
     def verbose_request(url, session = nil)
       session ||= ClientSession.new(url, imk)
-      req = AuthenticationQueryGenerator.new(session, url)
+      req = QueryGenerator.new(session, url)
       req = yield req if block_given?
       log.debug req.client_data.inspect
       log.debug "POST #{req.post_path}\n\n"
@@ -15,13 +15,13 @@ module SQRL
       log.debug "Response: #{res.status}"
       log.debug res.body
 
-      parsed = AuthenticationResponseParser.new(session, res.body)
+      parsed = ResponseParser.new(session, res.body)
       parsed.tif_base = tif_base
       log.info parsed.params.inspect
       parsed
     rescue Errno::ECONNREFUSED => e
       log.error e.message
-      AuthenticationResponseParser.new(session, {'exception' => e})
+      ResponseParser.new(session, {'exception' => e})
     end
 
     def print_tif(tif)

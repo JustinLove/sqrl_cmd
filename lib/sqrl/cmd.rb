@@ -1,7 +1,7 @@
 require "sqrl/cmd/version"
 require "sqrl/client_session"
-require "sqrl/authentication_query_generator"
-require "sqrl/authentication_response_parser"
+require "sqrl/query_generator"
+require "sqrl/response_parser"
 require "thor"
 require "logger"
 
