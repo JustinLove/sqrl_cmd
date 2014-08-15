@@ -29,5 +29,4 @@ module SQRL
 
   require "sqrl/cmd/options"
   require "sqrl/cmd/print"
-  require "sqrl/cmd/keys"
 end
