@@ -1,6 +1,6 @@
 # SqrlCmd
 
-TODO: Write a gem description
+Test-and-debug focused command line client for the [SQRL protocol](https://www.grc.com/sqrl/sqrl.htm)
 
 ## Installation
 
@@ -18,7 +18,27 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+$ sqrlcmd
+Commands:
+  sqrlcmd create [URL]    # Create a new account on the system
+  sqrlcmd help [COMMAND]  # Describe available commands or one specific command
+  sqrlcmd login [URL]     # Attempt login
+  sqrlcmd logout [URL]    # Issue logout command
+  sqrlcmd post [URL]      # Query server status with no command
+  sqrlcmd setkey [URL]    # Issue setkey command
+  sqrlcmd setlock [URL]   # Send the server and verify unlock keys
+  sqrlcmd sign [URL]      # Print the signed request
+
+Options:
+  [--verbose=VERBOSE]  # DEBUG, INFO, WARN
+                       # Default: WARN
+  [-i], [--no-i]       # verbose=INFO
+  [-d], [--no-d]       # verbose=DEBUG
+  [--tif-base=N]       
+                       # Default: 16
+  [--10], [--no-10]    # tif_base=10
+  [--imk=IMK]          # Identity Master Key
+  [--iuk=IUK]          # Identity Unlock Key
 
 ## Contributing
 
