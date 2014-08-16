@@ -39,6 +39,7 @@ Options:
   [--10], [--no-10]    # tif_base=10
   [--imk=IMK]          # Identity Master Key
   [--iuk=IUK]          # Identity Unlock Key
+  [--ilk=ILK]          # Identity Lock Key
 
 ## Contributing
 
