@@ -1,6 +1,6 @@
 module SQRL
   class Cmd
-    desc 'create [URL]', 'Create a new account on the system'
+    desc 'create URL', 'Create a new account on the system'
     option :only, :type => :boolean,
       :desc => "do not issue setkey/setlock"
     option :login, :type => :boolean,

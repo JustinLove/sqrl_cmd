@@ -4,7 +4,7 @@ require 'sqrl/key/server_unlock'
 
 module SQRL
   class Cmd
-    desc 'setlock [URL]', 'Send the server and verify unlock keys'
+    desc 'setlock URL', 'Send the server and verify unlock keys'
     def setlock(url)
       session = ClientSession.new(url, imk)
 

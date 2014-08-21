@@ -1,7 +1,7 @@
 module SQRL
   class Cmd
-    desc 'generate', 'generate a new id'
-    def generate
+    desc 'generate [FILENAME]', 'generate a new id, and save to FILENAME'
+    def generate(filename = 'sqrl.yaml')
       iuk = Key::IdentityUnlock.new
       ilk = iuk.identity_lock_key
       imk = iuk.identity_master_key
@@ -9,6 +9,7 @@ module SQRL
       puts "ilk: #{ilk}"
       puts "imk: #{imk}"
 
+      store = YAML::Store.new(filename)
       store.transaction do
         store['identity_unlock_key'] = iuk.to_s
         store['identity_lock_key'] = ilk.to_s

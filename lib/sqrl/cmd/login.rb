@@ -1,6 +1,6 @@
 module SQRL
   class Cmd
-    desc 'login [URL]', 'Attempt login'
+    desc 'login URL', 'Attempt login'
     long_desc <<-LONGDESC
       loops=1: The first request to the server includes the login command
 

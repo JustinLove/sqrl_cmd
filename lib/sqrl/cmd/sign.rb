@@ -1,6 +1,6 @@
 module SQRL
   class Cmd
-    desc 'sign [URL]', 'Print the signed request'
+    desc 'sign URL', 'Print the signed request'
     def sign(url)
       session = ClientSession.new(url, imk)
       request = QueryGenerator.new(session, url)
