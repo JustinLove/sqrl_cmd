@@ -11,7 +11,8 @@ module SQRL
       standard_display verbose_request(url, session) {|req|
         req.create!
         unless options[:only]
-          req.setkey!.setlock!(identity_lock_key.unlock_pair)
+          req.setkey!
+          req.setlock!(identity_lock_key.unlock_pair) if identity_lock_key?
         end
         req.login! if options[:login]
         req

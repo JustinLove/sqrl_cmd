@@ -10,7 +10,7 @@ module SQRL
       res = verbose_request(url, session) {|req| req.setkey!  }
       standard_display res
 
-      if res.command_failed? && res.suk? && identity_unlock_key
+      if res.command_failed? && res.suk? && identity_unlock_key?
         suk = Key::ServerUnlock.new(res.suk)
         ursk = Key::UnlockRequestSigning.new(suk, identity_unlock_key)
         standard_display verbose_request(url, session) {|req|

@@ -33,12 +33,16 @@ module SQRL
       options[:iuk] || store.transaction {store['identity_unlock_key']}
     end
 
+    def identity_unlock_key?
+      !!raw_iuk
+    end
+
     def identity_unlock_key
       @iuk ||= if string = raw_iuk
         Key::IdentityUnlock.new(parse_key(string))
       else
-        log.error "Identity Unlock Key was requested but none was found"
-        Key::IdentityUnlock.new("\0".b*32)
+        log.fatal "Identity Unlock Key was requested but none was found"
+        exit
       end
     end
 
@@ -46,14 +50,18 @@ module SQRL
       options[:imk] || store.transaction {store['identity_master_key']}
     end
 
+    def imk?
+      !!raw_imk || identity_unlock_key?
+    end
+
     def imk
       @imk ||= if string = raw_imk
         Key::IdentityMaster.new(parse_key(string))
-      elsif raw_iuk
+      elsif identity_unlock_key?
         identity_unlock_key.identity_master_key
       else
-        log.error "Identity Master Key was requested but none was found"
-        Key::IdentityMaster.new("\0".b*32)
+        log.fatal "Identity Master Key was requested but none was found"
+        exit
       end
     end
 
@@ -61,14 +69,18 @@ module SQRL
       options[:ilk] || store.transaction {store['identity_lock_key']}
     end
 
+    def identity_lock_key?
+      !!raw_ilk || identity_unlock_key?
+    end
+
     def identity_lock_key
       @ilk ||= if string = raw_ilk
         Key::IdentityLock.new(parse_key(string))
-      elsif raw_iuk
+      elsif identity_unlock_key?
         identity_unlock_key.identity_lock_key
       else
-        log.error "Identity Lock Key was requested but none was found"
-        Key::IdentityLock.new("\0".b*32)
+        log.fatal "Identity Lock Key was requested but none was found"
+        exit
       end
     end
 

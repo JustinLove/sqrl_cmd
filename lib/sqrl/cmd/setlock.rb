@@ -14,7 +14,7 @@ module SQRL
       standard_display res
       puts Base64.encode(res.suk)
 
-      if res.command_failed? && res.suk? && identity_unlock_key
+      if res.command_failed? && res.suk? && identity_unlock_key?
         suk = Key::ServerUnlock.new(res.suk)
         ursk = Key::UnlockRequestSigning.new(suk, identity_unlock_key)
         res =  verbose_request(url, session) {|req|
