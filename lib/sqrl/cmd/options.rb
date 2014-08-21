@@ -41,8 +41,7 @@ module SQRL
       @iuk ||= if string = raw_iuk
         Key::IdentityUnlock.new(parse_key(string))
       else
-        log.fatal "Identity Unlock Key was requested but none was found"
-        exit
+        missing_key('Identity Unlock', 'iuk')
       end
     end
 
@@ -60,8 +59,7 @@ module SQRL
       elsif identity_unlock_key?
         identity_unlock_key.identity_master_key
       else
-        log.fatal "Identity Master Key was requested but none was found"
-        exit
+        missing_key('Identity Master', 'imk')
       end
     end
 
@@ -79,8 +77,7 @@ module SQRL
       elsif identity_unlock_key?
         identity_unlock_key.identity_lock_key
       else
-        log.fatal "Identity Lock Key was requested but none was found"
-        exit
+        missing_key('Identity Lock', 'ilk')
       end
     end
 
@@ -98,6 +95,11 @@ module SQRL
 
     def store
       @store ||= YAML::Store.new('sqrl.yaml')
+    end
+
+    def missing_key(name, option)
+      log.fatal "#{name} Key not available.  Provide --#{option} or use `sqrlcmd generate` to create a file."
+      exit
     end
   end
 end
