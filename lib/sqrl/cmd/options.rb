@@ -29,19 +29,38 @@ module SQRL
       (options[:'10'] && 10) || options[:tif_base]
     end
 
-    def imk
-      Key::IdentityMaster.new(parse_key(options[:imk] || 'x'.b*32))
+    def identity_unlock_key
+      @iuk ||= begin
+        string = store.transaction {
+          options[:iuk] || store['identity_unlock_key'] || 'x'.b*32
+        }
+        Key::IdentityUnlock.new(parse_key(string))
+       end
     end
 
-    def identity_unlock_key
-      Key::IdentityUnlock.new(parse_key(options[:iuk] || 'x'.b*32))
+    def imk
+      @imk ||= begin
+        string = store.transaction {
+          options[:imk] || store['identity_master_key']
+        }
+        if string
+          Key::IdentityMaster.new(parse_key(string))
+        else
+          identity_unlock_key.identity_master_key
+        end
+      end
     end
 
     def identity_lock_key
-      @ilk ||= if options[:ilk]
-        Key::IdentityLock.new(parse_key(options[:ilk]))
-      else
-        identity_unlock_key.identity_lock_key
+      @ilk ||= begin
+        string = store.transaction {
+          options[:ilk] || store['identity_lock_key']
+        }
+        if string
+          Key::IdentityLock.new(parse_key(string))
+        else
+          identity_unlock_key.identity_lock_key
+        end
       end
     end
 

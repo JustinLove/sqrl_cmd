@@ -20,6 +20,7 @@ module SQRL
   end
 
   require "sqrl/cmd/generate"
+  require "sqrl/cmd/keys"
   require "sqrl/cmd/sign"
   require "sqrl/cmd/post"
   require "sqrl/cmd/setkey"
