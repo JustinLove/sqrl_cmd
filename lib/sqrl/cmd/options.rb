@@ -17,6 +17,10 @@ module SQRL
     class_option :iuk, :type => :string, :desc => 'Identity Unlock Key'
     class_option :ilk, :type => :string, :desc => 'Identity Lock Key'
 
+    class_option :keyfile, :type => :string, :default => 'sqrl.yaml',
+      :aliases => :f,
+      :desc => 'YAML file with key defintions'
+
     private
     def verbose
       d = options[:d] && 'DEBUG'
@@ -94,7 +98,7 @@ module SQRL
     end
 
     def store
-      @store ||= YAML::Store.new('sqrl.yaml')
+      @store ||= YAML::Store.new(options[:keyfile])
     end
 
     def missing_key(name, option)
