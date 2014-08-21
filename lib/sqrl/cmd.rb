@@ -19,6 +19,7 @@ module SQRL
     attr_reader :log
   end
 
+  require "sqrl/cmd/generate"
   require "sqrl/cmd/sign"
   require "sqrl/cmd/post"
   require "sqrl/cmd/setkey"

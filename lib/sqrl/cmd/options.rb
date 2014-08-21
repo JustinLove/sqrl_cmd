@@ -1,6 +1,7 @@
 require "sqrl/key/identity_master"
 require "sqrl/key/identity_unlock"
 require "sqrl/base64"
+require "yaml/store"
 
 module SQRL
   class Cmd
@@ -54,6 +55,10 @@ module SQRL
         log.fatal "Unknown key format provided '#{key}', #{key.length} characters"
         exit
       end
+    end
+
+    def store
+      @store ||= YAML::Store.new('sqrl.yaml')
     end
   end
 end
