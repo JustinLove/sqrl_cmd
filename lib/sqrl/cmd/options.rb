@@ -13,6 +13,8 @@ module SQRL
     class_option :tif_base, :type => :numeric, :default => 16
     class_option :'10', :type => :boolean, :desc => 'tif_base=10'
 
+    class_option :command, :type => :string, :desc => 'send additional command'
+
     class_option :imk, :type => :string, :desc => 'Identity Master Key'
     class_option :iuk, :type => :string, :desc => 'Identity Unlock Key'
     class_option :ilk, :type => :string, :desc => 'Identity Lock Key'

@@ -8,6 +8,7 @@ module SQRL
       session ||= ClientSession.new(url, imk)
       req = QueryGenerator.new(session, url)
       req = yield req if block_given?
+      req.commands << options[:command]
       log.info req.client_data.inspect
       log.debug req.client_string
       log.debug req.server_string

@@ -22,7 +22,7 @@ $ sqrlcmd
 Commands:
   sqrlcmd create URL           # Create a new account on the system
   sqrlcmd generate [FILENAME]  # generate a new id, and save to FILENAME
-  sqrlcmd help [COMMAND]       # Describe available commands or one specific ...
+  sqrlcmd help [COMMAND]       # Describe available commands or one specific co...
   sqrlcmd keys                 # print the effective keys given all options
   sqrlcmd login URL            # Attempt login
   sqrlcmd logout URL           # Issue logout command
@@ -39,6 +39,7 @@ Options:
       [--tif-base=N]       
                            # Default: 16
       [--10], [--no-10]    # tif_base=10
+      [--command=COMMAND]  # send additional command
       [--imk=IMK]          # Identity Master Key
       [--iuk=IUK]          # Identity Unlock Key
       [--ilk=ILK]          # Identity Lock Key
