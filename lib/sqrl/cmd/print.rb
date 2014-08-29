@@ -8,12 +8,15 @@ module SQRL
       session ||= ClientSession.new(url, imk)
       req = QueryGenerator.new(session, url)
       req = yield req if block_given?
-      log.debug req.client_data.inspect
-      log.debug "POST #{req.post_path}\n\n"
-      log.debug req.post_body
+      log.info req.client_data.inspect
+      log.debug req.client_string
+      log.debug req.server_string
+      log.debug req.to_hash.inspect
+      log.info "POST #{req.post_path}\n\n"
+      log.info req.post_body
       res = HTTPClient.new.post(req.post_path, req.post_body)
-      log.debug "Response: #{res.status}"
-      log.debug res.body
+      log.info "Response: #{res.status}"
+      log.info res.body
 
       parsed = ResponseParser.new(session, res.body)
       parsed.tif_base = tif_base
