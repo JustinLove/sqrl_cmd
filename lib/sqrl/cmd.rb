@@ -23,11 +23,6 @@ module SQRL
   require "sqrl/cmd/keys"
   require "sqrl/cmd/sign"
   require "sqrl/cmd/post"
-  require "sqrl/cmd/setkey"
-  require "sqrl/cmd/setlock"
-  require "sqrl/cmd/create"
-  require "sqrl/cmd/login"
-  require "sqrl/cmd/logout"
 
   require "sqrl/cmd/options"
   require "sqrl/cmd/print"
