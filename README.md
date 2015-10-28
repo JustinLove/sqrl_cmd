@@ -23,7 +23,7 @@ Commands:
   sqrlcmd generate [FILENAME]  # generate a new id, and save to FILENAME
   sqrlcmd help [COMMAND]       # Describe available commands or one specific co...
   sqrlcmd keys                 # print the effective keys given all options
-  sqrlcmd post URL             # Query server status with no command
+  sqrlcmd query URL            # Query server status
   sqrlcmd sign URL             # Print the signed request
 
 Options:
