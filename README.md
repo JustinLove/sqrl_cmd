@@ -21,7 +21,8 @@ Or install it yourself as:
 $ sqrlcmd
 Commands:
   sqrlcmd generate [FILENAME]  # generate a new id, and save to FILENAME
-  sqrlcmd help [COMMAND]       # Describe available commands or one specific co...
+  sqrlcmd help [COMMAND]       # Describe available commands or one specific ...
+  sqrlcmd ident URL            # Login/create assoction
   sqrlcmd keys                 # print the effective keys given all options
   sqrlcmd query URL            # Query server status
   sqrlcmd sign URL             # Print the signed request

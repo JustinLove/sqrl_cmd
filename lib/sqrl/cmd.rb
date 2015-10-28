@@ -22,6 +22,7 @@ module SQRL
   require "sqrl/cmd/generate"
   require "sqrl/cmd/keys"
   require "sqrl/cmd/sign"
+  require "sqrl/cmd/ident"
   require "sqrl/cmd/query"
 
   require "sqrl/cmd/options"
