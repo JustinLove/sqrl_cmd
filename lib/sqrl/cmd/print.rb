@@ -48,7 +48,7 @@ module SQRL
 
     def standard_display(parsed)
       print_tif(parsed.tif)
-      puts "#{parsed.server_friendly_name} -- #{parsed.ask}"
+      puts "#{parsed.server_friendly_name} -- #{parsed.ask.message}"
     end
   end
 end
