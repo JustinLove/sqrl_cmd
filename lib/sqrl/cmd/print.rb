@@ -1,4 +1,5 @@
 require "sqrl/tif"
+require "sqrl/cmd/version"
 require "httpclient"
 
 module SQRL
@@ -6,6 +7,10 @@ module SQRL
     private
 
     Headers = {'Content-Type' => 'application/x-www-form-urlencoded'}
+    Request = {
+      :agent_name => "SQRL/1 SQRL::Cmd/#{SqrlCmd::VERSION}",
+      :default_header => Headers,
+    }
 
     def verbose_request(url, session = nil)
       session ||= ClientSession.new(url, imk)
@@ -18,7 +23,7 @@ module SQRL
       log.debug req.to_hash.inspect
       log.info "POST #{req.post_path}\n\n"
       log.info req.post_body
-      res = HTTPClient.new.post(req.post_path, req.post_body, Headers)
+      res = HTTPClient.new(Request).post(req.post_path, req.post_body)
       log.info "Response: #{res.status}"
       log.info res.body
 
