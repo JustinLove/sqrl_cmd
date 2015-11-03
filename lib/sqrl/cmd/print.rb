@@ -12,9 +12,9 @@ module SQRL
       :default_header => Headers,
     }
 
-    def verbose_request(url, session = nil)
-      session ||= ClientSession.new(url, imk)
-      req = QueryGenerator.new(session, url)
+    def verbose_request(server_string, session = nil)
+      session ||= ClientSession.new(server_string, imk)
+      req = QueryGenerator.new(session, server_string)
       req = yield req if block_given?
       req.commands << options[:command] if options[:command]
       log.info req.client_data.inspect

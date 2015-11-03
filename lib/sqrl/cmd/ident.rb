@@ -13,7 +13,7 @@ module SQRL
       setlock = false
 
       if options[:loops] >= 2
-        parsed = verbose_request(url, session) {|req| req.query!}
+        parsed = verbose_request(session.server_string, session) {|req| req.query!}
         print_tif(parsed.tif)
         puts parsed.ask.message if parsed.ask?
         setlock = !parsed.id_match?
@@ -29,7 +29,7 @@ module SQRL
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       end
 
-      standard_display verbose_request(url, session) {|req|
+      standard_display verbose_request(session.server_string, session) {|req|
         req.ident!
         if setlock && identity_lock_key?
           req.setlock(identity_lock_key.unlock_pair)
