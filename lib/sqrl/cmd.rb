@@ -23,6 +23,8 @@ module SQRL
   require "sqrl/cmd/keys"
   require "sqrl/cmd/sign"
   require "sqrl/cmd/ident"
+  require "sqrl/cmd/disable"
+  require "sqrl/cmd/enable"
   require "sqrl/cmd/query"
 
   require "sqrl/cmd/options"
