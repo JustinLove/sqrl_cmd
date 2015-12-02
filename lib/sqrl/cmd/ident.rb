@@ -1,3 +1,5 @@
+require 'sqrl/key/unlock_request_signing'
+
 module SQRL
   class Cmd
     desc 'ident URL', 'Login/create assoction'
@@ -11,12 +13,14 @@ module SQRL
     def ident(url)
       session = ClientSession.new(url, imk)
       setlock = false
+      suk = nil
 
       if options[:loops] >= 2
         parsed = verbose_request(session.server_string, session) {|req| req.query!}
         print_tif(parsed.tif)
         puts parsed.ask.message if parsed.ask?
-        setlock = !parsed.id_match?
+        setlock = !parsed.suk?
+        suk = Key::ServerUnlock.new(parsed.suk) if parsed.suk?
         if parsed.sqrl_disabled? ||
            parsed.function_not_supported? ||
            parsed.transient_error? ||
@@ -31,6 +35,10 @@ module SQRL
 
       standard_display verbose_request(session.server_string, session) {|req|
         req.ident!
+        if suk && identity_unlock_key?
+          ursk = Key::UnlockRequestSigning.new(suk, identity_unlock_key)
+          req.unlock(ursk)
+        end
         if setlock && identity_lock_key?
           req.setlock(identity_lock_key.unlock_pair)
         end
