@@ -20,11 +20,14 @@ Or install it yourself as:
 
 $ sqrlcmd
 Commands:
+  sqrlcmd disable URL          # Disable ordinary access to your account via ...
+  sqrlcmd enable URL           # Clear disabled status, requires unlock keys
   sqrlcmd generate [FILENAME]  # generate a new id, and save to FILENAME
   sqrlcmd help [COMMAND]       # Describe available commands or one specific ...
   sqrlcmd ident URL            # Login/create assoction
   sqrlcmd keys                 # print the effective keys given all options
   sqrlcmd query URL            # Query server status
+  sqrlcmd remove URL           # Remove SQRL association, requires unlock keys
   sqrlcmd sign URL             # Print the signed request
 
 Options:
