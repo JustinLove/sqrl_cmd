@@ -26,8 +26,7 @@ module SQRL
            parsed.transient_error? ||
            parsed.command_failed? ||
            parsed.client_failure? ||
-           parsed.bad_association_id? ||
-           parsed.invalid_link_origin?
+           parsed.bad_association_id?
           return
         end
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
