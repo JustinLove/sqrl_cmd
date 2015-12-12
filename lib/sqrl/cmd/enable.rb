@@ -2,6 +2,7 @@ module SQRL
   class Cmd
     desc 'enable URL', 'Clear disabled status, requires unlock keys'
     def enable(url)
+      url = upgrade_url(url)
       session = ClientSession.new(url, imk)
 
       res = verbose_request(session.server_string, session) {|req| req.query! }

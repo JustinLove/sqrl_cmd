@@ -28,6 +28,7 @@ Commands:
   sqrlcmd keys                 # print the effective keys given all options
   sqrlcmd query URL            # Query server status
   sqrlcmd remove URL           # Remove SQRL association, requires unlock keys
+  sqrlcmd scan URL             # scan the url for sqrl urls
   sqrlcmd sign URL             # Print the signed request
 
 Options:
