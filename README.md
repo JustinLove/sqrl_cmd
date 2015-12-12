@@ -38,7 +38,6 @@ Options:
       [--tif-base=N]       
                            # Default: 16
       [--10], [--no-10]    # tif_base=10
-      [--command=COMMAND]  # send additional command
       [--imk=IMK]          # Identity Master Key
       [--iuk=IUK]          # Identity Unlock Key
       [--ilk=ILK]          # Identity Lock Key

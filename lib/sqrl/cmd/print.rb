@@ -16,7 +16,6 @@ module SQRL
       session ||= ClientSession.new(server_string, imk)
       req = QueryGenerator.new(session, server_string)
       req = yield req if block_given?
-      req.commands << options[:command] if options[:command]
       log.info req.client_data.inspect
       log.debug req.client_string
       log.debug req.server_string
