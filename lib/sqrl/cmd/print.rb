@@ -12,7 +12,7 @@ module SQRL
       :default_header => SqrlHeaders,
     }
 
-    def verbose_request(server_string, session = nil)
+    def verbose_request(server_string, session = nil, retries = 1)
       server_string = upgrade_url(server_string)
       session ||= ClientSession.new(server_string, imk)
       req = QueryGenerator.new(session, server_string)
@@ -30,7 +30,14 @@ module SQRL
       parsed = ResponseParser.new(session, res.body)
       parsed.tif_base = tif_base
       log.info parsed.params.inspect
-      parsed
+
+      if parsed.transient_error? && retries > 0
+        standard_display(parsed) if log.level <= Logger::INFO
+        puts "Transient error, retrying"
+        verbose_request(session.server_string, session, retries - 1)
+      else
+        parsed
+      end
     rescue Errno::ECONNREFUSED => e
       log.error e.message
       ResponseParser.new(session, {'exception' => e})
