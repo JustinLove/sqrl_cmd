@@ -6,6 +6,11 @@ module SQRL
   class Cmd
     private
 
+    def create_session(url)
+      url = upgrade_url(url)
+      ClientSession.new(url, [imk])
+    end
+
     SqrlHeaders = {'Content-Type' => 'application/x-www-form-urlencoded'}
     SqrlRequest = {
       :agent_name => "SQRL/1 SQRL::Cmd/#{SqrlCmd::VERSION}",
@@ -13,9 +18,8 @@ module SQRL
     }
 
     def verbose_request(server_string, session = nil, retries = 1)
-      server_string = upgrade_url(server_string)
-      session ||= ClientSession.new(server_string, imk)
-      req = QueryGenerator.new(session, server_string)
+      session ||= create_session(server_string)
+      req = QueryGenerator.new(session, session.server_string)
       req = yield req if block_given?
       log.info req.client_data.inspect
       log.debug req.client_string

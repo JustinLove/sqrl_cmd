@@ -11,8 +11,7 @@ module SQRL
     option :loops, :type => :numeric, :default => 2,
       :desc => "1: direct, 2: check server first"
     def ident(url)
-      url = upgrade_url(url)
-      session = ClientSession.new(url, imk)
+      session = create_session(url)
       setlock = false
       suk = nil
 

@@ -2,8 +2,7 @@ module SQRL
   class Cmd
     desc 'remove URL', 'Remove SQRL association, requires unlock keys'
     def remove(url)
-      url = upgrade_url(url)
-      session = ClientSession.new(url, imk)
+      session = create_session(url)
 
       res = verbose_request(session.server_string, session) {|req| req.query! }
       standard_display res

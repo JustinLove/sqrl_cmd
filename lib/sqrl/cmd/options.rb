@@ -34,7 +34,7 @@ module SQRL
     end
 
     def raw_iuk
-      options[:iuk] || store.transaction {store['identity_unlock_key']}
+      options[:iuk] || identities.first['identity_unlock_key']
     end
 
     def identity_unlock_key?
@@ -50,7 +50,7 @@ module SQRL
     end
 
     def raw_imk
-      options[:imk] || store.transaction {store['identity_master_key']}
+      options[:imk] || identities.first['identity_master_key']
     end
 
     def imk?
@@ -68,7 +68,7 @@ module SQRL
     end
 
     def raw_ilk
-      options[:ilk] || store.transaction {store['identity_lock_key']}
+      options[:ilk] || identities.first['identity_lock_key']
     end
 
     def identity_lock_key?
@@ -99,6 +99,12 @@ module SQRL
 
     def store
       @store ||= YAML::Store.new(options[:keyfile])
+    end
+
+    def identities
+      store.transaction {
+        (store['identities'] && store['identities']) || [Hash.new({})]
+      }
     end
 
     def missing_key(name, option)

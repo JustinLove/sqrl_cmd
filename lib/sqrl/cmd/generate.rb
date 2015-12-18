@@ -11,9 +11,12 @@ module SQRL
 
       store = YAML::Store.new(filename)
       store.transaction do
-        store['identity_unlock_key'] = iuk.to_s
-        store['identity_lock_key'] = ilk.to_s
-        store['identity_master_key'] = imk.to_s
+        store['identities'] ||= []
+        store['identities'].unshift({
+          'identity_unlock_key' => iuk.to_s,
+          'identity_lock_key' => ilk.to_s,
+          'identity_master_key' => imk.to_s,
+        })
       end
     end
   end
