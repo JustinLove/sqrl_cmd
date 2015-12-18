@@ -14,6 +14,7 @@ module SQRL
     class_option :'10', :type => :boolean, :desc => 'tif_base=10'
 
     class_option :imk, :type => :string, :desc => 'Identity Master Key'
+    class_option :pimk, :type => :string, :desc => 'Previous Identity Master Key'
     class_option :iuk, :type => :string, :desc => 'Identity Unlock Key'
     class_option :ilk, :type => :string, :desc => 'Identity Lock Key'
 
@@ -64,6 +65,23 @@ module SQRL
         identity_unlock_key.identity_master_key
       else
         missing_key('Identity Master', 'imk')
+      end
+    end
+
+    def raw_pimk
+      return options[:pimk] if options[:pimk]
+      if identities[1]
+        identities[1]['identity_master_key']
+      end
+    end
+
+    def pimk?
+      !!raw_pimk
+    end
+
+    def pimk
+      @pimk ||= if string = raw_pimk
+        Key::IdentityMaster.new(parse_key(string))
       end
     end
 

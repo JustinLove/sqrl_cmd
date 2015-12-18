@@ -8,7 +8,7 @@ module SQRL
 
     def create_session(url)
       url = upgrade_url(url)
-      ClientSession.new(url, [imk])
+      ClientSession.new(url, [imk, pimk].compact)
     end
 
     SqrlHeaders = {'Content-Type' => 'application/x-www-form-urlencoded'}
