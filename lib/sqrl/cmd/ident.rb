@@ -10,16 +10,22 @@ module SQRL
     LONGDESC
     option :loops, :type => :numeric, :default => 2,
       :desc => "1: direct, 2: check server first"
+    option :setlock, :type => :boolean, :default => false,
+      :desc => "Force sending suk/vuk on existing identity"
     def ident(url)
       session = create_session(url)
-      setlock = false
+      setlock = options[:setlock]
+      id_match = false
+      previous_id_match = false
       suk = nil
 
       if options[:loops] >= 2
         parsed = verbose_request(session.server_string, session) {|req| req.query!}
         print_tif(parsed.tif)
         puts parsed.ask.message if parsed.ask?
-        setlock = !parsed.suk?
+        setlock ||= !(parsed.id_match? || parsed.previous_id_match?)
+        id_match = parsed.id_match?
+        previous_id_match = parsed.previous_id_match?
         suk = Key::ServerUnlock.new(parsed.suk) if parsed.suk?
         if parsed.sqrl_disabled? ||
            parsed.function_not_supported? ||
@@ -34,8 +40,11 @@ module SQRL
 
       standard_display verbose_request(session.server_string, session) {|req|
         req.ident!
-        if suk && identity_unlock_key?
+        if id_match && suk && identity_unlock_key?
           ursk = Key::UnlockRequestSigning.new(suk, identity_unlock_key)
+          req.unlock(ursk)
+        elsif previous_id_match && suk && previous_identity_unlock_key?
+          ursk = Key::UnlockRequestSigning.new(suk, previous_identity_unlock_key)
           req.unlock(ursk)
         end
         if setlock && identity_lock_key?

@@ -16,6 +16,7 @@ module SQRL
     class_option :imk, :type => :string, :desc => 'Identity Master Key'
     class_option :pimk, :type => :string, :desc => 'Previous Identity Master Key'
     class_option :iuk, :type => :string, :desc => 'Identity Unlock Key'
+    class_option :piuk, :type => :string, :desc => 'Previous Identity Unlock Key'
     class_option :ilk, :type => :string, :desc => 'Identity Lock Key'
 
     class_option :keyfile, :type => :string, :default => 'sqrl.yaml',
@@ -47,6 +48,25 @@ module SQRL
         Key::IdentityUnlock.new(parse_key(string))
       else
         missing_key('Identity Unlock', 'iuk')
+      end
+    end
+
+    def raw_piuk
+      return options[:piuk] if options[:piuk]
+      if identities[1]
+        identities[1]['identity_unlock_key']
+      end
+    end
+
+    def previous_identity_unlock_key?
+      !!raw_piuk
+    end
+
+    def previous_identity_unlock_key
+      @piuk ||= if string = raw_piuk
+        Key::IdentityUnlock.new(parse_key(string))
+      else
+        missing_key('Previous Identity Unlock', 'piuk')
       end
     end
 
