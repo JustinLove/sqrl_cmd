@@ -23,8 +23,10 @@ module SQRL
       :aliases => :f,
       :desc => 'YAML file with key defintions'
 
+    class_option :suk, :type => :boolean,
+      :desc => 'request server unlock key in response'
     class_option :opt, :type => :array,
-      :aliases => :o,
+      :aliases => :o, :default => [],
       :desc => 'free-form sqrl options'
 
     private
@@ -128,7 +130,7 @@ module SQRL
     end
 
     def opt
-      options[:opt]
+      options[:opt] | (options[:suk] ? ['suk'] : [])
     end
 
     def parse_key(key)
