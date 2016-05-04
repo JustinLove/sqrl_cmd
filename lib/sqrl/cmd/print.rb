@@ -20,6 +20,7 @@ module SQRL
     def verbose_request(server_string, session = nil, retries = 1)
       session ||= create_session(server_string)
       req = QueryGenerator.new(session, session.server_string)
+      req.opt(*opt)
       req = yield req if block_given?
       log.info req.client_data.inspect
       log.debug req.client_string

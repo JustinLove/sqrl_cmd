@@ -23,6 +23,10 @@ module SQRL
       :aliases => :f,
       :desc => 'YAML file with key defintions'
 
+    class_option :opt, :type => :array,
+      :aliases => :o,
+      :desc => 'free-form sqrl options'
+
     private
     def verbose
       d = options[:d] && 'DEBUG'
@@ -121,6 +125,10 @@ module SQRL
       else
         missing_key('Identity Lock', 'ilk')
       end
+    end
+
+    def opt
+      options[:opt]
     end
 
     def parse_key(key)
