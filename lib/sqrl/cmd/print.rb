@@ -62,5 +62,14 @@ module SQRL
       print_tif(parsed.tif)
       puts "#{parsed.server_friendly_name} -- #{parsed.ask.message}"
     end
+
+    def open_browser(url)
+      case RbConfig::CONFIG['host_os']
+      when /mswin|mingw|cygwin/; system "start #{url}"
+      when /darwin/;             system "open #{url}"
+      when /linux|bsd/;          system "xdg-open #{url}"
+      else puts url
+      end
+    end
   end
 end

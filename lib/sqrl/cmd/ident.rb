@@ -38,7 +38,7 @@ module SQRL
         return unless yes?("log in to '#{parsed.server_friendly_name}'?")
       end
 
-      standard_display verbose_request(session.server_string, session) {|req|
+      parsed = verbose_request(session.server_string, session) {|req|
         req.ident!
         if id_match && suk && identity_unlock_key?
           ursk = Key::UnlockRequestSigning.new(suk, identity_unlock_key)
@@ -52,6 +52,11 @@ module SQRL
         end
         req
       }
+
+      standard_display parsed
+      if parsed.url?
+        open_browser(parsed.url)
+      end
     end
   end
 end
