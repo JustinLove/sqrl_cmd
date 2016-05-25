@@ -25,6 +25,8 @@ module SQRL
 
     class_option :suk, :type => :boolean,
       :desc => 'request server unlock key in response'
+    class_option :cps, :type => :boolean,
+      :desc => 'request client provided sesssion'
     class_option :opt, :type => :array,
       :aliases => :o, :default => [],
       :desc => 'free-form sqrl options'
@@ -130,7 +132,9 @@ module SQRL
     end
 
     def opt
-      options[:opt] | (options[:suk] ? ['suk'] : [])
+      options[:opt] |
+        (options[:suk] ? ['suk'] : []) |
+        (options[:cps] ? ['cps'] : [])
     end
 
     def parse_key(key)
