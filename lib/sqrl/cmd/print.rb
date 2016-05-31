@@ -28,7 +28,9 @@ module SQRL
       log.debug req.to_hash.inspect
       log.info "POST #{req.post_path}\n\n"
       log.info req.post_body
-      res = HTTPClient.new(SqrlRequest).post(req.post_path, req.post_body)
+      h = HTTPClient.new(SqrlRequest)
+      h.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE unless verify_cert?
+      res = h.post(req.post_path, req.post_body)
       log.info "Response: #{res.status}"
       log.info res.body
 

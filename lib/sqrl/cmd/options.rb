@@ -31,6 +31,9 @@ module SQRL
       :aliases => :o, :default => [],
       :desc => 'free-form sqrl options'
 
+    class_option :cert, :type => :boolean, :default => true,
+      :desc => 'verify tls certificates (disable for local self signed)'
+
     private
     def verbose
       d = options[:d] && 'DEBUG'
@@ -135,6 +138,10 @@ module SQRL
       options[:opt] |
         (options[:suk] ? ['suk'] : []) |
         (options[:cps] ? ['cps'] : [])
+    end
+
+    def verify_cert?
+      !!options[:cert]
     end
 
     def parse_key(key)

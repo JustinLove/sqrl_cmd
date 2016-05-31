@@ -15,7 +15,9 @@ module SQRL
     def upgrade_url(url)
       return url unless url.start_with?('http')
       log.info "GET #{url}"
-      res = HTTPClient.new(ScanRequest).get(url)
+      h = HTTPClient.new(ScanRequest)
+      h.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE unless verify_cert?
+      res = h.get(url)
       log.info "Response: #{res.status}"
       matches = res.body.match(/"(s?qrl:\/\/[^"]+)"/m)
       if matches
