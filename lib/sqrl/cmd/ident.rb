@@ -18,6 +18,7 @@ module SQRL
       id_match = false
       previous_id_match = false
       suk = nil
+      sin = nil
 
       if options[:loops] >= 2
         parsed = verbose_request(session.server_string, session) {|req| req.query!}
@@ -27,6 +28,7 @@ module SQRL
         id_match = parsed.id_match?
         previous_id_match = parsed.previous_id_match?
         suk = Key::ServerUnlock.new(parsed.suk) if parsed.suk?
+        sin = parsed.sin if parsed.sin?
         if parsed.sqrl_disabled? ||
            parsed.function_not_supported? ||
            parsed.transient_error? ||
@@ -49,6 +51,9 @@ module SQRL
         end
         if setlock && identity_lock_key?
           req.setlock(identity_lock_key.unlock_pair)
+        end
+        if sin
+          req.sin(sin)
         end
         req
       }
