@@ -4,7 +4,7 @@ module SQRL
     def remove(url)
       session = create_session(url)
 
-      res = verbose_request(session.server_string, session) {|req| req.query! }
+      res = verbose_request(session.server_string, session) {|req| req.opt('suk').query! }
       standard_display res
 
       if res.id_match? && res.suk? && identity_unlock_key?

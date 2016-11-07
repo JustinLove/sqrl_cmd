@@ -29,7 +29,7 @@ module SQRL
         else
           log.info matches[1]
         end
-        return matches[1]
+        return matches[1].gsub('&amp;', '&')
       else
         return url
       end
