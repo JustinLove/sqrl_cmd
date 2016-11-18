@@ -34,7 +34,7 @@ module SQRL
       log.info "Response: #{res.status}"
       log.info res.body
 
-      parsed = ResponseParser.new(session, res.body)
+      parsed = ResponseParser.new(res.body).update_session(session)
       parsed.tif_base = tif_base
       log.info parsed.params.inspect
 
@@ -47,7 +47,8 @@ module SQRL
       end
     rescue Errno::ECONNREFUSED => e
       log.error e.message
-      ResponseParser.new(session, {'exception' => e})
+      session.server_string = server_string
+      ResponseParser.new({'exception' => e})
     end
 
     def print_tif(tif)
