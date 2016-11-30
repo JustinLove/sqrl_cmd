@@ -14,6 +14,7 @@ module SQRL
     }
     def upgrade_url(url)
       return url unless url.start_with?('http')
+      log.info headline('-', "http url, tyring to find sqrl url")
       log.info "GET #{url}"
       h = HTTPClient.new(ScanRequest)
       h.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE unless verify_cert?
@@ -33,6 +34,8 @@ module SQRL
       else
         return url
       end
+    ensure
+      log.info headline('-') + "\n"
     end
   end
 end
