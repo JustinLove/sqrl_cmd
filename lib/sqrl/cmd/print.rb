@@ -19,6 +19,7 @@ module SQRL
 
     def verbose_request(server_string, session = nil, retries = 1)
       session ||= create_session(server_string)
+      puts session.server_friendly_name
       req = QueryGenerator.new(session, session.server_string)
       req.opt(*opt)
       req = yield req if block_given?
@@ -63,7 +64,7 @@ module SQRL
 
     def standard_display(parsed)
       print_tif(parsed.tif)
-      puts "#{parsed.server_friendly_name} -- #{parsed.ask.message}"
+      puts [parsed.ask.message, parsed.params['sfn']].compact.join(' -- ')
     end
 
     def open_browser(url)
