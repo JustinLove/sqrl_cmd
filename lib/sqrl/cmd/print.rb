@@ -9,7 +9,15 @@ module SQRL
     def create_session(url)
       url = upgrade_url(url)
       session = ClientSession.new(url, [imk, pimk].compact)
-      puts "SFN: \"#{session.server_friendly_name}\"\n\n"
+      log.debug headline('-', 'Site Keys')
+      log.debug data_field('imk', imk)
+      log.debug format_site_key(session.site_key)
+      if pimk
+        log.debug data_field('pimk', imk)
+        log.debug format_site_key(session.previous_site_key)
+      end
+      log.debug headline('-')
+      puts "SFN: \"#{session.server_friendly_name}\"\n"
       session
     end
 
@@ -103,6 +111,13 @@ module SQRL
         headline('-'),
         "",
       ].flatten.join("\n")
+    end
+
+    def format_site_key(site_key)
+      [
+        data_field('private', Base64.encode(site_key.instance_variable_get('@private_key').to_bytes)),
+        data_field('public', Base64.encode(site_key.public_key)),
+      ].join("\n")
     end
   end
 end
