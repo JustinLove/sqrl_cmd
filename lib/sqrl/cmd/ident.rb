@@ -37,7 +37,7 @@ module SQRL
            parsed.bad_association_id?
           return
         end
-        return unless yes?("log in to '#{parsed.server_friendly_name}'?")
+        return unless yes?("log in to '#{session.server_friendly_name}'?")
       end
 
       parsed = verbose_request(session.server_string, session) {|req|
